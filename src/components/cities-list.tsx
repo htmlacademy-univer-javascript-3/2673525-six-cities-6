@@ -1,4 +1,5 @@
-import { City } from '../types/city';
+import { type City } from '../types/city';
+import cn from 'classnames';
 
 type CitiesListProps = {
   cities: City[];
@@ -14,10 +15,11 @@ function CitiesList({ cities, currentCity, onCityChange }: CitiesListProps): JSX
           {cities.map((city) => (
             <li key={city.name} className="locations__item">
               <a
-                className={`locations__item-link tabs__item ${
-                  city.name === currentCity.name ? 'tabs__item--active' : ''
-                }`}
-                href="#"
+                className={cn('locations__item-link tabs__item',
+                  {
+                    'tabs__item--active': city.name === currentCity.name
+                  }
+                )}
                 onClick={(e) => {
                   e.preventDefault();
                   onCityChange(city);

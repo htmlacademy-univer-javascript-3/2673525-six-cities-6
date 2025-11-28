@@ -1,4 +1,4 @@
-// import { ReviewType } from '../types/review';
+// import { type ReviewType } from '../types/review';
 
 // export const reviews: ReviewType[] = [
 //   {

@@ -1,7 +1,8 @@
-import { Offer } from '../types/offer';
+import { type Offer } from '../types/offer';
 import { Link } from 'react-router-dom';
 import { getOfferRoute } from '../const';
 import { MouseEvent } from 'react';
+import cn from 'classnames';
 
 type OfferCardProps = {
   offer: Offer;
@@ -10,7 +11,6 @@ type OfferCardProps = {
 };
 
 function OfferCard({ offer, onMouseEnter, className, }: OfferCardProps): JSX.Element {
-  const mainPhoto = offer.images[0] || '';
   const offerRoute = getOfferRoute(offer.id);
 
   return (
@@ -26,8 +26,8 @@ function OfferCard({ offer, onMouseEnter, className, }: OfferCardProps): JSX.Ele
       )}
 
       <div className={`${className}__image-wrapper place-card__image-wrapper`}>
-        <Link to ={offerRoute}>
-          <img className='place-card__image' src={mainPhoto} width='260' height='200' alt='Place image'/>
+        <Link to={offerRoute}>
+          <img className='place-card__image' src={offer?.previewImage} width='260' height='200' alt='Place image' />
         </Link>
       </div>
       <div className='place-card__info'>
@@ -37,7 +37,13 @@ function OfferCard({ offer, onMouseEnter, className, }: OfferCardProps): JSX.Ele
             {' '}
             <span className='place-card__price-text'>&#47;&nbsp;night</span>
           </div>
-          <button className={`place-card__bookmark-button ${offer.isFavorite ? 'place-card__bookmark-button--active ' : ''}button`} type='button'>
+          <button
+            className={cn(
+              'place-card__bookmark-button',
+              { 'place-card__bookmark-button--active': offer.isFavorite },
+              'button')}
+            type='button'
+          >
             <svg className='place-card__bookmark-icon' width='18' height='19'>
               <use xlinkHref='#icon-bookmark'></use>
             </svg>
@@ -46,7 +52,7 @@ function OfferCard({ offer, onMouseEnter, className, }: OfferCardProps): JSX.Ele
         </div>
         <div className='place-card__rating rating'>
           <div className='place-card__stars rating__stars'>
-            <span style={{width: `${offer.rating * 20}%`}}></span>
+            <span style={{ width: `${offer.rating * 20}%` }}></span>
             <span className='visually-hidden'>Rating</span>
           </div>
         </div>

@@ -1,9 +1,9 @@
+import { UserData } from './user-data';
+
 export type ReviewType = {
-  id: number;
-  offerId: number;
-  author: string;
-  avatar: string;
-  rating: number;
+  id: string;
   date: string;
-  text: string;
+  user: UserData;
+  rating: number;
+  comment: string;
 };

@@ -1,37 +1,68 @@
 import { Helmet } from 'react-helmet-async';
-import { Link } from 'react-router-dom';
-import { AppRoute } from '../../const';
+import { Link, Navigate, useNavigate } from 'react-router-dom';
+import { AppRoute, AuthorizationStatus } from '../../const';
+import Header from '../../components/header/header';
+import { useAppDispatch } from '../../hooks/use-app-dispatch';
+import { FormEvent, useState } from 'react';
+import { loginAction } from '../../store/api-actions';
+import { useAppSelector } from '../../hooks/use-app-selector';
 
 function LoginPage(): JSX.Element {
+  const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  const authorizationStatus = useAppSelector((s) => s.authorizationStatus);
+  if (authorizationStatus === AuthorizationStatus.Auth) {
+    return <Navigate to={AppRoute.Root} />;
+  }
+
+  const handleSubmit = async (evt: FormEvent<HTMLFormElement>) => {
+    evt.preventDefault();
+    const resultAction = await dispatch(loginAction({login: email, password}));
+
+    if (loginAction.fulfilled.match(resultAction)) {
+      navigate(AppRoute.Root);
+    }
+  };
+
   return (
     <div className="page page--gray page--login">
       <Helmet>
         <title>{'6 cities — login'}</title>
       </Helmet>
-      <header className="header">
-        <div className="container">
-          <div className="header__wrapper">
-            <div className="header__left">
-              <Link className="header__logo-link" to={AppRoute.Root}>
-                <img className="header__logo" src="img/logo.svg" alt="6 cities logo" width="81" height="41" />
-              </Link>
-            </div>
-          </div>
-        </div>
-      </header>
+
+      <Header isLoginPage/>
 
       <main className="page__main page__main--login">
         <div className="page__login-container container">
           <section className="login">
             <h1 className="login__title">Sign in</h1>
-            <form className="login__form form" action="#" method="post">
+            <form className="login__form form" method="post" onSubmit={(e) => void handleSubmit(e)}>
               <div className="login__input-wrapper form__input-wrapper">
                 <label className="visually-hidden">E-mail</label>
-                <input className="login__input form__input" type="email" name="email" placeholder="Email" required />
+                <input
+                  className="login__input form__input"
+                  type="email"
+                  name="email"
+                  placeholder="Email"
+                  value={email}
+                  onChange={(evt) => setEmail(evt.target.value)}
+                  required
+                />
               </div>
               <div className="login__input-wrapper form__input-wrapper">
                 <label className="visually-hidden">Password</label>
-                <input className="login__input form__input" type="password" name="password" placeholder="Password" required />
+                <input
+                  className="login__input form__input"
+                  type="password"
+                  name="password"
+                  placeholder="Password"
+                  value={password}
+                  onChange={(evt) => setPassword(evt.target.value)}
+                  required
+                />
               </div>
               <button className="login__submit form__submit button" type="submit">Sign in</button>
             </form>

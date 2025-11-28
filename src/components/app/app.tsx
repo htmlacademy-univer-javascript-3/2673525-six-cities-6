@@ -1,16 +1,13 @@
-import {BrowserRouter, Routes, Route} from 'react-router-dom';
-import {HelmetProvider} from 'react-helmet-async';
-import {AppRoute, getOfferRoute} from '../../const';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { HelmetProvider } from 'react-helmet-async';
+import { AppRoute, AuthorizationStatus, getOfferRoute } from '../../const';
 import MainPage from '../../pages/main-page/main-page';
 import LoginPage from '../../pages/login-page/login-page';
 import FavoritesPage from '../../pages/favorites-page/favorites-page';
 import OfferPage from '../../pages/offer-page/offer-page';
 import NotFoundPage from '../../pages/not-found-page/not-found-page';
 import PrivateRoute from '../private-route';
-//import {useDispatch, } from 'react-redux';
-//import { State } from '../../types/state';
-import {fetchOffersAction} from '../../store/api-actions';
-//import {AppDispatch} from '../../store';
+import { fetchOffersAction } from '../../store/api-actions';
 import { useEffect } from 'react';
 import LoadingPage from '../../pages/loading-page/loading-page';
 import { useAppSelector } from '../../hooks/use-app-selector';
@@ -23,10 +20,10 @@ function App(): JSX.Element {
   }, [dispatch]);
 
   const offers = useAppSelector((state) => state.offers);
-  const reviews = useAppSelector((state) => state.reviews);
   const isOffersDataLoading = useAppSelector((state) => state.isOffersDataLoading);
+  const authorizationStatus = useAppSelector((state) => state.authorizationStatus);
 
-  if (/* authorizationStatus === AuthorizationStatus.Unknown ||*/ isOffersDataLoading) {
+  if (authorizationStatus === AuthorizationStatus.Unknown || isOffersDataLoading) {
     return (
       <LoadingPage />
     );
@@ -47,14 +44,17 @@ function App(): JSX.Element {
           <Route
             path={AppRoute.Favorites}
             element={
-              <PrivateRoute redirectTo = {AppRoute.Login}>
+              <PrivateRoute
+                authorizationStatus={authorizationStatus}
+                redirectTo={AppRoute.Login}
+              >
                 <FavoritesPage offers={offers}/>
               </PrivateRoute>
             }
           />
           <Route
             path={getOfferRoute(':id')}
-            element={<OfferPage reviews={reviews} offers={offers}/>}
+            element={<OfferPage />}
           />
           <Route
             path= "*"

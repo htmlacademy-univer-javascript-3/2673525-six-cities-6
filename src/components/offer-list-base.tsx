@@ -1,8 +1,9 @@
 import OfferCard from './offer-card-base';
-import { Offer } from '../types/offer';
+import { type Offer } from '../types/offer';
 import { MouseEvent } from 'react';
 import OfferCardCities from './offer-card-cities';
 import OfferCardNearPlaces from './offer-card-near-places';
+import cn from 'classnames';
 
 type OfferListProps = {
   offers: Offer[];
@@ -32,7 +33,7 @@ const getComponentByType = (className: string, offer: Offer, onMouseEnter: (even
   return <OfferCard offer={offer} />;
 };
 
-function OfferList({ offers, onListItemHover, className, tabsContent, } : OfferListProps) : JSX.Element {
+function OfferList({ offers, onListItemHover, className, tabsContent, }: OfferListProps): JSX.Element {
   const handleListItemHover = (event: MouseEvent<HTMLElement>) => {
     if (!onListItemHover) {
       return;
@@ -45,9 +46,15 @@ function OfferList({ offers, onListItemHover, className, tabsContent, } : OfferL
   };
 
   return (
-    <div className={className === 'near-places'
-      ? 'near-places__list places__list'
-      : `${className}__places-list places__list${tabsContent ? ' tabs__content' : ''}`}
+    <div
+      className={cn(
+        'places__list',
+        {
+          'near-places__list': className === 'near-places',
+          [`${className}__places-list`]: className !== 'near-places',
+          'tabs__content': tabsContent && className !== 'near-places'
+        }
+      )}
     >
       {offers.map((offer) => (
         <div key={offer.id}>

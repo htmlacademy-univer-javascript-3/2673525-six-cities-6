@@ -1,33 +1,35 @@
 import { Helmet } from 'react-helmet-async';
-import { Offer } from '../../types/offer';
-import { Link } from 'react-router-dom';
-import {AppRoute, /*CITIES*/} from '../../const';
+import { type Offer } from '../../types/offer';
 import { useState } from 'react';
 import Map from '../../components/map';
 import OfferListCities from '../../components/offer-list-cities';
 import CitiesList from '../../components/cities-list';
-import { useDispatch, /*useSelector */} from 'react-redux';
-//import { State } from '../../types/state';
 import { changeCity } from '../../store/action';
 import { useAppSelector } from '../../hooks/use-app-selector';
-import { RootState } from '../../store';
+import { useAppDispatch } from '../../hooks/use-app-dispatch';
+import Header from '../../components/header/header';
+import { type City } from '../../types/city';
 
 function MainPage(): JSX.Element {
+  const dispatch = useAppDispatch();
 
-  const dispatch = useDispatch();
-  const currentCity = useAppSelector((state : RootState) => state.city);
-  const allOffers = useAppSelector((state : RootState) => state.offers);
+  const currentCity = useAppSelector((state) => state.city);
+  const allOffers = useAppSelector((state) => state.offers);
 
   const cityOffers = allOffers.filter((offer) => offer.city.name === currentCity.name);
   const offersCount = cityOffers.length;
 
-  const cities = Array.from(new Set(allOffers.map((offer) => offer.city)));
+  const uniqueCities: Record<string, City> = {};
+
+  allOffers.forEach((offer) => {
+    uniqueCities[offer.city.name] = offer.city;
+  });
+
+  const cities = Object.values(uniqueCities);
+
   const handleCityChange = (city: typeof cities[0]) => {
     dispatch(changeCity(city));
   };
-
-  const favoriteOffers = allOffers.filter((offer) => offer.isFavorite);
-  const favoriteCount = favoriteOffers.length;
 
   const [selectedOffer, setSelectedOffer] = useState<Offer | undefined>(undefined);
 
@@ -41,34 +43,8 @@ function MainPage(): JSX.Element {
       <Helmet>
         <title>{'6 cities'}</title>
       </Helmet>
-      <header className="header">
-        <div className="container">
-          <div className="header__wrapper">
-            <div className="header__left">
-              <Link className="header__logo-link header__logo-link--active" to={AppRoute.Root}>
-                <img className="header__logo" src="img/logo.svg" alt="6 cities logo" width="81" height="41"/>
-              </Link>
-            </div>
-            <nav className="header__nav">
-              <ul className="header__nav-list">
-                <li className="header__nav-item user">
-                  <Link className="header__nav-link header__nav-link--profile" to={AppRoute.Favorites}>
-                    <div className="header__avatar-wrapper user__avatar-wrapper">
-                    </div>
-                    <span className="header__user-name user__name">Oliver.conner@gmail.com</span>
-                    <span className="header__favorite-count">{favoriteCount}</span>
-                  </Link>
-                </li>
-                <li className="header__nav-item">
-                  <a className="header__nav-link" href="#">
-                    <span className="header__signout">Sign out</span>
-                  </a>
-                </li>
-              </ul>
-            </nav>
-          </div>
-        </div>
-      </header>
+
+      <Header />
 
       <main className="page__main page__main--index">
         <h1 className="visually-hidden">Cities</h1>

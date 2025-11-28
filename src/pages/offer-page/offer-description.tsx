@@ -1,11 +1,12 @@
-import { Offer } from '../../types/offer';
+import cn from 'classnames';
+import { type Offer } from '../../types/offer';
 
 type OfferDescriptionProps = {
-    offer: Offer;
+  offer: Offer;
 };
 
-function OfferDescription({ offer } : OfferDescriptionProps) : JSX.Element {
-  return(
+function OfferDescription({ offer }: OfferDescriptionProps): JSX.Element {
+  return (
     <>
       {offer.isPremium && (
         <div className='offer__mark'>
@@ -16,7 +17,13 @@ function OfferDescription({ offer } : OfferDescriptionProps) : JSX.Element {
         <h1 className='offer__name'>
           {offer.title}
         </h1>
-        <button className={`offer__bookmark-button ${offer.isFavorite ? 'offer__bookmark-button--active ' : ''}button`} type='button'>
+        <button
+          className={cn(
+            'offer__bookmark-button',
+            { 'offer__bookmark-button--active': offer.isFavorite },
+            'button')}
+          type='button'
+        >
           <svg className='offer__bookmark-icon' width='31' height='33'>
             <use xlinkHref='#icon-bookmark'></use>
           </svg>
@@ -25,7 +32,7 @@ function OfferDescription({ offer } : OfferDescriptionProps) : JSX.Element {
       </div>
       <div className='offer__rating rating'>
         <div className='offer__stars rating__stars'>
-          <span style={{width: `${offer.rating * 20}%`}}></span>
+          <span style={{ width: `${offer.rating * 20}%` }}></span>
           <span className='visually-hidden'>Rating</span>
         </div>
         <span className='offer__rating-value rating__value'>{offer.rating}</span>
@@ -38,7 +45,7 @@ function OfferDescription({ offer } : OfferDescriptionProps) : JSX.Element {
           {offer.bedrooms} {offer.bedrooms !== 1 ? 'Bedrooms' : 'Bedroom'}
         </li>
         <li className='offer__feature offer__feature--adults'>
-                    Max {offer.maxAdults} adults
+          Max {offer.maxAdults} adults
         </li>
       </ul>
       <div className='offer__price'>
@@ -66,16 +73,14 @@ function OfferDescription({ offer } : OfferDescriptionProps) : JSX.Element {
           </span>
           {offer.host.isPro && (
             <span className='offer__user-status'>
-                            Pro
+              Pro
             </span>
           )}
         </div>
         <div className='offer__description'>
-          {offer.description.map((description) => (
-            <p className='offer__text' key={description}>
-              {description}
-            </p>
-          ))}
+          <p className='offer__text'>
+            {offer.description}
+          </p>
         </div>
       </div>
     </>
