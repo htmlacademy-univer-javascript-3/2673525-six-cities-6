@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
-import cn from 'classnames';
+import classNames from 'classnames';
 
 import { SortingOption } from '../../const';
 
@@ -14,20 +14,20 @@ function SortingSelector({ currentSorting, onSortingChange }: SortingSelectorPro
 
   const menuRef = useRef<HTMLFormElement | null>(null);
 
-  const handleSelect = useCallback((key: SortingOption) => {
+  const handleSortingSelect = useCallback((key: SortingOption) => {
     onSortingChange(key);
     setIsOpen(false);
   }, [onSortingChange]);
 
   useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
+    const handleMenuOutsideClick = (event: MouseEvent) => {
       if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
         setIsOpen(false);
       }
     };
 
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    document.addEventListener('mousedown', handleMenuOutsideClick);
+    return () => document.removeEventListener('mousedown', handleMenuOutsideClick);
   }, []);
 
   return (
@@ -50,7 +50,7 @@ function SortingSelector({ currentSorting, onSortingChange }: SortingSelectorPro
         </svg>
       </span>
 
-      <ul className={cn(
+      <ul className={classNames(
         'places__options places__options--custom',
         { 'places__options--opened': isOpen }
       )}
@@ -58,12 +58,12 @@ function SortingSelector({ currentSorting, onSortingChange }: SortingSelectorPro
         {Object.values(SortingOption).map((option) => (
           <li
             key={option}
-            className={cn(
+            className={classNames(
               'places__option',
               { 'places__option--active': option === currentSorting }
             )}
             tabIndex={0}
-            onClick={() => handleSelect(option)}
+            onClick={() => handleSortingSelect(option)}
           >
             {option}
           </li>

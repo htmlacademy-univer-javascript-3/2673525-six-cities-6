@@ -1,15 +1,15 @@
 import { createSelector } from '@reduxjs/toolkit';
 
-import { MaxOfferItems, NameSpace } from '../../const';
-import { State } from '../../types/state';
+import { MaxOfferCounter, NameSpace } from '../../const';
+import { type State } from '../../types/state';
 
 export const getCurrentOffer = (state: State) => state[NameSpace.Offer].offer;
 export const getOfferReviews = (state: State) => state[NameSpace.Offer].reviews;
-export const getNearbyOffers = (state: State) => state[NameSpace.Offer].nearby;
+export const getNearbyOffers = (state: State) => state[NameSpace.Offer].nearbyOffers;
 
 export const selectTopNearbyOffers = createSelector(
   [getNearbyOffers],
-  (nearbyOffers) => nearbyOffers.slice(0, MaxOfferItems.MaxNearby)
+  (nearbyOffers) => nearbyOffers.slice(0, MaxOfferCounter.Nearby)
 );
 
 export const selectMapOffers = createSelector(
@@ -24,6 +24,6 @@ export const selectReviews = createSelector(
     const sorted = [...reviews].sort((a, b) =>
       new Date(b.date).getTime() - new Date(a.date).getTime()
     );
-    return sorted.slice(0, MaxOfferItems.MaxReviews);
+    return sorted.slice(0, MaxOfferCounter.Reviews);
   }
 );

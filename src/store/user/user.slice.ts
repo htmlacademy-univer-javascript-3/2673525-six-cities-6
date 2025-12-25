@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 
 import { AuthorizationStatus } from '../../const';
-import { UserState } from '../../types/state';
+import { type UserState } from '../../types/state';
 import { checkAuthAction, loginAction, logoutAction } from '../api-actions';
 
 
@@ -17,7 +17,10 @@ export const userSlice = createSlice({
   reducers: {
     setError(state, action: PayloadAction<string | null>) {
       state.error = action.payload;
-    }
+    },
+    setAuthorizationStatus(state, action: PayloadAction<AuthorizationStatus>) {
+      state.authorizationStatus = action.payload;
+    },
   },
   extraReducers: (builder) => {
     builder
@@ -45,4 +48,4 @@ export const userSlice = createSlice({
   },
 });
 
-export const { setError } = userSlice.actions;
+export const { setError, setAuthorizationStatus } = userSlice.actions;

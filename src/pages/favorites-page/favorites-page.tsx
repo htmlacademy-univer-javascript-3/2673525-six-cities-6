@@ -1,21 +1,23 @@
 import { useEffect, useMemo } from 'react';
 import { Helmet } from 'react-helmet-async';
-import { Link } from 'react-router-dom';
-import cn from 'classnames';
+import { Link, useNavigate } from 'react-router-dom';
+import classNames from 'classnames';
 
 import { AppRoute } from '../../const';
 import Header from '../../components/header/header';
-import OfferList from '../../components/offer-list/offer-list-cities';
+import { OfferListCities } from '../../components/offer-list';
 import EmptyFavoritesState from '../../components/empty-favorite-state';
 
-import { useAppSelector } from '../../hooks/use-app-selector';
 import { type Offer } from '../../types/offer';
 import { getFavoritesOffers } from '../../store/offers/offers.selector';
-import { useAppDispatch } from '../../hooks/use-app-dispatch';
+import { useAppDispatch, useAppSelector } from '../../hooks';
 import { fetchFavoriteOffers } from '../../store/api-actions';
+import { setCity } from '../../store/city/city.slice';
 
 function FavoritesPage(): JSX.Element {
   const dispatch = useAppDispatch();
+  const navigate = useNavigate();
+
   useEffect(() => {
     dispatch(fetchFavoriteOffers());
   }, [dispatch]);
@@ -30,6 +32,13 @@ function FavoritesPage(): JSX.Element {
     return acc;
   }, {}), [favoriteOffers]);
 
+  const handleCityClick = (cityOffers: Offer[]) => (evt: React.MouseEvent<HTMLAnchorElement>) => {
+    evt.preventDefault();
+    const city = cityOffers[0].city;
+    dispatch(setCity(city));
+    navigate(AppRoute.Root);
+  };
+
   return (
     <div className="page">
       <Helmet>
@@ -39,7 +48,7 @@ function FavoritesPage(): JSX.Element {
       <Header />
 
       <main
-        className={cn('page__main', 'page__main--favorites', {
+        className={classNames('page__main', 'page__main--favorites', {
           'page__main--favorites-empty': favoriteOffers.length === 0,
         })}
       >
@@ -54,13 +63,17 @@ function FavoritesPage(): JSX.Element {
                   <li key={cityName} className="favorites__locations-items">
                     <div className="favorites__locations locations locations--current">
                       <div className="locations__item">
-                        <a className="locations__item-link" href="#">
+                        <a
+                          className="locations__item-link"
+                          role="button"
+                          onClick={handleCityClick(cityOffers)}
+                        >
                           <span>{cityName}</span>
                         </a>
                       </div>
                     </div>
                     <div className="favorites__places">
-                      <OfferList offers={cityOffers} />
+                      <OfferListCities offers={cityOffers} />
                     </div>
                   </li>
                 ))}

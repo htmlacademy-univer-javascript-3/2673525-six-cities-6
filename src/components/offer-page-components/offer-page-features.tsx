@@ -1,12 +1,12 @@
 import React from 'react';
 
-type OfferBookmarkButtonProps = {
+type OfferFeaturesProps = {
   type: string;
   bedrooms: number;
   maxAdults: number;
 };
 
-function OfferFeatures({ type, bedrooms, maxAdults }: OfferBookmarkButtonProps): JSX.Element {
+function OfferFeatures({ type, bedrooms, maxAdults }: OfferFeaturesProps): JSX.Element {
   return (
     <ul className='offer__features'>
       <li className='offer__feature offer__feature--entire'>

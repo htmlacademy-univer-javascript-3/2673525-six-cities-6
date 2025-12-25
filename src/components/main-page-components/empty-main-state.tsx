@@ -1,6 +1,6 @@
-interface EmptyMainStateProps {
+type EmptyMainStateProps = {
   city: string;
-}
+};
 
 function EmptyMainState({ city }: EmptyMainStateProps): JSX.Element {
   return (

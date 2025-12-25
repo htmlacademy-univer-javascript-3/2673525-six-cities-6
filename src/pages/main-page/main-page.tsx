@@ -1,16 +1,14 @@
 import { useCallback, useMemo, useState } from 'react';
-import cn from 'classnames';
+import classNames from 'classnames';
 import { Helmet } from 'react-helmet-async';
 
 import Header from '../../components/header/header';
 import CitiesList from '../../components/cities-list';
 import Map from '../../components/map';
-import OfferListCities from '../../components/offer-list/offer-list-cities';
-import EmptyMainState from '../../components/main-page-components/empty-main-state';
-import SortingSelector from '../../components/main-page-components/sorting-selector';
+import { OfferListCities } from '../../components/offer-list';
+import { EmptyMainState, SortingSelector } from '../../components/main-page-components';
 
-import { useAppDispatch } from '../../hooks/use-app-dispatch';
-import { useAppSelector } from '../../hooks/use-app-selector';
+import { useAppDispatch, useAppSelector } from '../../hooks';
 import { type City } from '../../types/city';
 import { type Offer } from '../../types/offer';
 import { setCity } from '../../store/city/city.slice';
@@ -43,15 +41,15 @@ function MainPage(): JSX.Element {
   const [sortType, setSortType] = useState<SortingOption>(SortingOption.Popular);
 
   const sortedOffers = useMemo(() => {
-    const offersCopy = [...cityOffers];
+    const copiedOffersList = [...cityOffers];
 
     switch (sortType) {
       case SortingOption.PriceLowToHigh:
-        return offersCopy.sort((a, b) => a.price - b.price);
+        return copiedOffersList.sort((a, b) => a.price - b.price);
       case SortingOption.PriceHighToLow:
-        return offersCopy.sort((a, b) => b.price - a.price);
+        return copiedOffersList.sort((a, b) => b.price - a.price);
       case SortingOption.TopRatedFirst:
-        return offersCopy.sort((a, b) => b.rating - a.rating);
+        return copiedOffersList.sort((a, b) => b.rating - a.rating);
       default:
         return [...cityOffers];
     }
@@ -66,7 +64,7 @@ function MainPage(): JSX.Element {
       <Header />
 
       <main
-        className={cn('page__main', 'page__main--index', {
+        className={classNames('page__main', 'page__main--index', {
           'page__main--index-empty': offersCount === 0,
         })}
       >

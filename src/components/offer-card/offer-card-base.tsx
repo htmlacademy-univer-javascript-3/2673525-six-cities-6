@@ -1,14 +1,13 @@
 import React, { useCallback } from 'react';
 import { MouseEvent } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import cn from 'classnames';
+import classNames from 'classnames';
 
-import { AppRoute, AuthorizationStatus, getOfferRoute } from '../../const';
+import { AppRoute, AuthorizationStatus, getOfferRoute, MaxOfferCounter } from '../../const';
 import { type Offer } from '../../types/offer';
 import { addFavorite } from '../../store/api-actions';
-import { useAppDispatch } from '../../hooks/use-app-dispatch';
+import { useAppDispatch, useAppSelector } from '../../hooks';
 import { getAuthorizationStatus } from '../../store/user/user.selector';
-import { useAppSelector } from '../../hooks/use-app-selector';
 
 type OfferCardProps = {
   offer: Offer;
@@ -54,7 +53,7 @@ function OfferCard({ offer, onMouseEnter, className, }: OfferCardProps): JSX.Ele
             <span className='place-card__price-text'>&#47;&nbsp;night</span>
           </div>
           <button
-            className={cn(
+            className={classNames(
               'place-card__bookmark-button',
               { 'place-card__bookmark-button--active': offer.isFavorite },
               'button')}
@@ -69,14 +68,14 @@ function OfferCard({ offer, onMouseEnter, className, }: OfferCardProps): JSX.Ele
         </div>
         <div className='place-card__rating rating'>
           <div className='place-card__stars rating__stars'>
-            <span style={{ width: `${offer.rating * 20}%` }}></span>
+            <span style={{ width: `${Math.min(MaxOfferCounter.Rating, Math.round(offer.rating)) * 20}%` }}></span>
             <span className='visually-hidden'>Rating</span>
           </div>
         </div>
         <h2 className='place-card__name'>
           <Link to={offerRoute}>{offer.title}</Link>
         </h2>
-        <p className='place-card__type'>{offer.type}</p>
+        <p className='place-card__type'>{offer.type.charAt(0).toUpperCase() + offer.type.slice(1)}</p>
       </div>
     </article>
   );

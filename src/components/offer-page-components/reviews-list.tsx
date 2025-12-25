@@ -1,6 +1,6 @@
 import React from 'react';
 import Review from './review';
-import { type ReviewType } from '../types/review';
+import { type ReviewType } from '../../types/review';
 
 type ReviewsListProps = {
   reviews: ReviewType[];
@@ -8,6 +8,7 @@ type ReviewsListProps = {
 
 function ReviewsList({ reviews }: ReviewsListProps): JSX.Element {
   const reviewsAmount = reviews.length;
+
   return (
     <>
       <h2 className="reviews__title">

@@ -1,19 +1,16 @@
-import { useEffect, useMemo } from 'react';
+import { useEffect } from 'react';
 import { Helmet } from 'react-helmet-async';
 import { useParams } from 'react-router-dom';
 
 import Header from '../../components/header/header';
 import Form from '../../components/form';
 import Map from '../../components/map';
-import OfferListNearPlaces from '../../components/offer-list/offer-list-near-places';
-import ReviewsList from '../../components/reviews-list';
-import OfferDescription from '../../components/offer-page-components/offer-page-description';
-import OfferImages from '../../components/offer-page-components/offer-page-images';
+import { OfferListNearPlaces } from '../../components/offer-list';
+import { OfferImages, OfferDescription, ReviewsList } from '../../components/offer-page-components';
 
-import { useAppDispatch } from '../../hooks/use-app-dispatch';
-import { useAppSelector } from '../../hooks/use-app-selector';
+import { useAppDispatch, useAppSelector } from '../../hooks';
 import { fetchNearbyAction, fetchOfferAction, fetchReviewsAction } from '../../store/api-actions';
-import { getCurrentOffer, getOfferReviews, selectMapOffers, selectTopNearbyOffers } from '../../store/offer/offer.selector';
+import { getCurrentOffer, selectMapOffers, selectReviews, selectTopNearbyOffers } from '../../store/offer/offer.selector';
 import { AuthorizationStatus, DEFAULT_CITY } from '../../const';
 import NotFoundPage from '../not-found-page/not-found-page';
 import { getIsOffersDataLoading } from '../../store/offers/offers.selector';
@@ -36,17 +33,12 @@ function OfferPage(): JSX.Element {
 
   const authorizationStatus = useAppSelector(getAuthorizationStatus);
   const currentOffer = useAppSelector(getCurrentOffer);
-  const offerReviews = useAppSelector(getOfferReviews);
+  const offerReviews = useAppSelector(selectReviews);
   const nearbyOffers = useAppSelector(selectTopNearbyOffers);
   const isOffersDataLoading = useAppSelector(getIsOffersDataLoading);
 
   const city = currentOffer?.city ?? DEFAULT_CITY;
   const mapOffers = useAppSelector(selectMapOffers);
-
-  const memoizedNearbyOffers = useMemo(
-    () => nearbyOffers,
-    [nearbyOffers]
-  );
 
   const images = currentOffer?.images ?? [];
 
@@ -85,7 +77,7 @@ function OfferPage(): JSX.Element {
         <div className='container'>
           <section className='near-places places'>
             <h2 className='near-places__title'>Other places in the neighbourhood</h2>
-            <OfferListNearPlaces offers={memoizedNearbyOffers} />
+            <OfferListNearPlaces offers={nearbyOffers} />
           </section>
         </div>
       </main>

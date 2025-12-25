@@ -7,9 +7,9 @@ import { type Offer } from '../types/offer';
 import { type ReviewType } from '../types/review';
 import { type UserData } from '../types/user-data';
 import { type FavoriteData } from '../types/favorite-data';
+import { type CommentData } from '../types/comment-data';
 import { dropToken, saveToken } from '../services/token';
 import { setError } from './user/user.slice';
-import { CommentData } from '../types/comment-data';
 
 export const clearErrorAction = createAsyncThunk(
   'user/clearError',
@@ -51,13 +51,27 @@ export const fetchReviewsAction = createAsyncThunk<ReviewType[], string, {
   }
 );
 
-export const postReviewAction = createAsyncThunk<void, { offerId: string; data: CommentData },
-  { extra: AxiosInstance }
+export const postReviewAction = createAsyncThunk<
+  void,
+  { offerId: string; data: CommentData },
+  {
+    extra: AxiosInstance;
+    rejectValue: string;
+  }
 >(
   'data/postReview',
-  async ({ offerId, data }, { extra: api, dispatch }) => {
-    await api.post(`${APIRoute.Reviews}/${offerId}`, data);
-    await dispatch(fetchReviewsAction(offerId));
+  async ({ offerId, data }, { extra: api, dispatch, rejectWithValue }) => {
+    try {
+      await api.post(`${APIRoute.Reviews}/${offerId}`, data);
+      await dispatch(fetchReviewsAction(offerId));
+    } catch {
+      const errorMessage = 'Failed to send review. Please try again.';
+
+      dispatch(setError(errorMessage));
+      dispatch(clearErrorAction());
+
+      return rejectWithValue(errorMessage);
+    }
   }
 );
 

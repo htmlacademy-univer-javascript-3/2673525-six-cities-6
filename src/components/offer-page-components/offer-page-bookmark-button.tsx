@@ -1,10 +1,9 @@
-import cn from 'classnames';
+import classNames from 'classnames';
 import { useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { AuthorizationStatus, AppRoute } from '../../const';
-import { useAppDispatch } from '../../hooks/use-app-dispatch';
-import { useAppSelector } from '../../hooks/use-app-selector';
+import { useAppDispatch, useAppSelector } from '../../hooks';
 import { addFavorite } from '../../store/api-actions';
 import { getAuthorizationStatus } from '../../store/user/user.selector';
 import React from 'react';
@@ -29,7 +28,7 @@ function OfferBookmarkButton({ offerId, isFavorite }: OfferBookmarkButtonProps):
 
   return (
     <button
-      className={cn(
+      className={classNames(
         'offer__bookmark-button',
         { 'offer__bookmark-button--active': isFavorite },
         'button')}

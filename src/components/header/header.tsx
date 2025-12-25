@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 
-import { AppRoute, AuthorizationStatus, NameSpace } from '../../const';
-import { useAppDispatch } from '../../hooks/use-app-dispatch';
-import { useAppSelector } from '../../hooks/use-app-selector';
-import { fetchOffersAction, logoutAction } from '../../store/api-actions';
+import { AppRoute, AuthorizationStatus } from '../../const';
+import { useAppDispatch, useAppSelector } from '../../hooks';
+import { fetchFavoriteOffers, fetchOffersAction, logoutAction } from '../../store/api-actions';
+import { getAuthorizationStatus, getUserData } from '../../store/user/user.selector';
+import { getFavoritesOffers } from '../../store/offers/offers.selector';
 import './header.css';
 import LinkRoot from './link-root';
 
@@ -13,13 +14,20 @@ type HeaderProps = {
 };
 
 function Header({ isLoginPage }: HeaderProps): JSX.Element {
-
   const dispatch = useAppDispatch();
-  const authorizationStatus = useAppSelector((state) => state[NameSpace.User].authorizationStatus);
-  const favoriteCount = useAppSelector((state) => state[NameSpace.Offers].offers.filter((o) => o.isFavorite).length);
-  const user = useAppSelector((state) => state[NameSpace.User].user);
 
-  const handleLogout = async () => {
+  const authorizationStatus = useAppSelector(getAuthorizationStatus);
+  const favoriteOffers = useAppSelector(getFavoritesOffers);
+  const favoriteCount = favoriteOffers.length;
+  const user = useAppSelector(getUserData);
+
+  useEffect(() => {
+    if (authorizationStatus === AuthorizationStatus.Auth) {
+      dispatch(fetchFavoriteOffers());
+    }
+  }, [dispatch, authorizationStatus]);
+
+  const handleLogoutButtonClick = async () => {
     await dispatch(logoutAction());
     dispatch(fetchOffersAction());
   };
@@ -45,7 +53,7 @@ function Header({ isLoginPage }: HeaderProps): JSX.Element {
                       </Link>
                     </li>
                     <li className="header__nav-item">
-                      <button className="header__nav-link header__signout-button" onClick={() => void handleLogout()}>
+                      <button className="header__nav-link header__signout-button" onClick={() => void handleLogoutButtonClick()}>
                         <span className="header__signout">Sign out</span>
                       </button>
                     </li>

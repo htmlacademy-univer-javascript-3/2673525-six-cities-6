@@ -1,7 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 import { addFavorite, fetchFavoriteOffers, fetchOffersAction } from '../api-actions';
-import { OffersState } from '../../types/state';
+import { type OffersState } from '../../types/state';
 
 const initialState: OffersState = {
   offers: [],

@@ -24,7 +24,7 @@ export type CityState = {
 export type OfferState = {
   offer: Offer | null;
   reviews: ReviewType[];
-  nearby: Offer[];
+  nearbyOffers: Offer[];
 };
 
 export type OffersState = {

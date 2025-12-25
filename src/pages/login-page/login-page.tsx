@@ -1,26 +1,13 @@
-import React from 'react';
 import { FormEvent, useState } from 'react';
 import { Helmet } from 'react-helmet-async';
-import { Link, Navigate, useNavigate } from 'react-router-dom';
+import { Navigate, useNavigate } from 'react-router-dom';
 
 import { AppRoute, AuthorizationStatus } from '../../const';
 import Header from '../../components/header/header';
-import { useAppDispatch } from '../../hooks/use-app-dispatch';
-import { useAppSelector } from '../../hooks/use-app-selector';
+import { useAppDispatch, useAppSelector } from '../../hooks';
 import { fetchOffersAction, loginAction } from '../../store/api-actions';
 import { getAuthorizationStatus } from '../../store/user/user.selector';
-
-const LoginLocation = React.memo(() => (
-  <section className="locations locations--login locations--current">
-    <div className="locations__item">
-      <Link className="locations__item-link" to={AppRoute.Root}>
-        <span>Paris</span>
-      </Link>
-    </div>
-  </section>
-));
-
-LoginLocation.displayName = 'LoginLocation';
+import LoginLocation from '../../components/login-location';
 
 function LoginPage(): JSX.Element {
   const dispatch = useAppDispatch();
@@ -33,7 +20,7 @@ function LoginPage(): JSX.Element {
     return <Navigate to={AppRoute.Root} />;
   }
 
-  const handleSubmit = async (evt: FormEvent<HTMLFormElement>) => {
+  const handleFormSubmit = async (evt: FormEvent<HTMLFormElement>) => {
     evt.preventDefault();
     const resultAction = await dispatch(loginAction({ login: email, password }));
     dispatch(fetchOffersAction());
@@ -54,7 +41,7 @@ function LoginPage(): JSX.Element {
         <div className="page__login-container container">
           <section className="login">
             <h1 className="login__title">Sign in</h1>
-            <form className="login__form form" method="post" onSubmit={(e) => void handleSubmit(e)}>
+            <form className="login__form form" method="post" onSubmit={(e) => void handleFormSubmit(e)}>
               <div className="login__input-wrapper form__input-wrapper">
                 <label className="visually-hidden">E-mail</label>
                 <input
